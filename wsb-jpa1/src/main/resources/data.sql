@@ -1,2 +1,77 @@
-insert into address (id, address_line1, address_line2, city, postal_code)
-            values (1, 'xx', 'yy', 'city', '62-030');
+-- Create necessary tables if they don't exist
+CREATE TABLE IF NOT EXISTS ADDRESS (
+    id INT PRIMARY KEY,
+    address_line1 VARCHAR(255),
+    address_line2 VARCHAR(255),
+    city VARCHAR(255),
+    postal_code VARCHAR(10)
+);
+
+CREATE TABLE IF NOT EXISTS DOCTOR (
+    id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    telephone_number VARCHAR(20),
+    email VARCHAR(100),
+    doctor_number VARCHAR(10),
+    specialization VARCHAR(50)
+);
+
+CREATE TABLE IF NOT EXISTS PATIENT (
+    id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    telephone_number VARCHAR(20),
+    email VARCHAR(100),
+    patient_number VARCHAR(10),
+    date_of_birth DATE,
+    has_insurance BOOLEAN
+);
+
+CREATE TABLE IF NOT EXISTS VISIT (
+    id INT PRIMARY KEY,
+    description VARCHAR(255),
+    time TIMESTAMP,
+    PATIENT_ID INT,
+    DOCTOR_ID INT,
+    FOREIGN KEY (PATIENT_ID) REFERENCES PATIENT(id),
+    FOREIGN KEY (DOCTOR_ID) REFERENCES DOCTOR(id)
+);
+
+CREATE TABLE IF NOT EXISTS MEDICAL_TREATMENT (
+    id INT PRIMARY KEY,
+    description VARCHAR(255),
+    type VARCHAR(50),
+    VISIT_ID INT,
+    FOREIGN KEY (VISIT_ID) REFERENCES VISIT(id)
+);
+
+CREATE TABLE IF NOT EXISTS DOCTOR_ADDRESS_MAPPING (
+    doctor_id INT,
+    address_id INT,
+    FOREIGN KEY (doctor_id) REFERENCES DOCTOR(id),
+    FOREIGN KEY (address_id) REFERENCES ADDRESS(id)
+);
+
+CREATE TABLE IF NOT EXISTS PATIENT_ADDRESS_MAPPING (
+    patient_id INT,
+    address_id INT,
+    FOREIGN KEY (patient_id) REFERENCES PATIENT(id),
+    FOREIGN KEY (address_id) REFERENCES ADDRESS(id)
+);
+
+-- Clear existing data
+DELETE FROM DOCTOR_ADDRESS_MAPPING;
+DELETE FROM PATIENT_ADDRESS_MAPPING;
+DELETE FROM MEDICAL_TREATMENT;
+DELETE FROM VISIT;
+DELETE FROM PATIENT;
+DELETE FROM DOCTOR;
+DELETE FROM ADDRESS;
+
+-- Reset auto-increment (if necessary)
+ALTER TABLE ADDRESS ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE DOCTOR ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE PATIENT ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE VISIT ALTER COLUMN id RESTART WITH 1;
+ALTER TABLE MEDICAL_TREATMENT ALTER COLUMN id RESTART WITH 1;

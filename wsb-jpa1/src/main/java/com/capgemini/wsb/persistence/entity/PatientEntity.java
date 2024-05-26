@@ -1,13 +1,11 @@
 package com.capgemini.wsb.persistence.entity;
 
-import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.*;
 
 @Entity
 @Table(name = "PATIENT")
@@ -17,22 +15,38 @@ public class PatientEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false)
-	private String firstName;
+    @Column(name = "firstName", nullable = false)
+    private String firstName;
 
-	@Column(nullable = false)
-	private String lastName;
+    @Column(name = "lastName", nullable = false)
+    private String lastName;
 
-	@Column(nullable = false)
-	private String telephoneNumber;
+    @Column(name = "telephoneNumber", nullable = false)
+    private String telephoneNumber;
 
-	private String email;
+    @Column(name = "email", nullable = false)
+    private String email;
 
-	@Column(nullable = false)
-	private String patientNumber;
+    @Column(name = "patientNumber", nullable = false)
+    private String patientNumber;
 
-	@Column(nullable = false)
-	private LocalDate dateOfBirth;
+    @Column(name = "dateOfBirth", nullable = false)
+    private LocalDate dateOfBirth;
+
+    @Column(name = "hasFamily", nullable = false)
+    private boolean hasFamily;
+
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "PATIENT_ADDRESS_MAPPING",
+            joinColumns = @JoinColumn(name = "PATIENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "ADDRESS_ID")
+    )
+    private List<AddressEntity> addresses;
+
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<VisitEntity> visits;
 
 	public Long getId() {
 		return id;
@@ -90,4 +104,27 @@ public class PatientEntity {
 		this.dateOfBirth = dateOfBirth;
 	}
 
+	public boolean isHasFamily() {
+        return hasFamily;
+    }
+
+    public void setHasFamily(boolean hasInsurance) {
+        this.hasFamily = hasInsurance;
+    }
+
+    public List<AddressEntity> getAddresses() {
+        return addresses;
+    }
+
+    public void setAddresses(List<AddressEntity> addresses) {
+        this.addresses = addresses;
+    }
+
+    public List<VisitEntity> getVisits() {
+        return visits;
+    }
+
+    public void setVisits(List<VisitEntity> visits) {
+        this.visits = visits;
+    }
 }
