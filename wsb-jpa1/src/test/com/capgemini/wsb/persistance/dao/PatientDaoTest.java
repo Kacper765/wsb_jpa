@@ -80,7 +80,7 @@ public class PatientDaoTest {
         patientEntity1.setEmail("marek.kret@example.com");
         patientEntity1.setPatientNumber("P001");
         patientEntity1.setDateOfBirth(LocalDate.of(1975, 7, 25));
-        patientEntity1.setHasInsurance(true);
+        patientEntity1.setHasFamily(true);
 
         PatientEntity patientEntity2 = new PatientEntity();
         patientEntity2.setFirstName("Anna");
@@ -89,7 +89,7 @@ public class PatientDaoTest {
         patientEntity2.setEmail("anna.kret@example.com");
         patientEntity2.setPatientNumber("P002");
         patientEntity2.setDateOfBirth(LocalDate.of(1992, 8, 20));
-        patientEntity2.setHasInsurance(false);
+        patientEntity2.setHasFamily(false);
 
         int patientListInitSize = patientDao.findAll().size();
         int patientListSizeStartsOnLastName = patientDao.findByLastName("Kret").size();
